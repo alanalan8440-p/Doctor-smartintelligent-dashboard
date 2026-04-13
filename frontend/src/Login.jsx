@@ -21,12 +21,23 @@ export default function Login() {
         });
         
         if (error) {
-          // If login fails, we'll alert but also let you bypass for dev purposes if needed
-          // Remove the bypass if you want strict authentication
-          alert(`Supabase Auth Error: ${error.message}\n(Make sure to create this user in Supabase Authentication!)`);
+          // Development Bypass: Allow login even if Supabase auth fails for quick testing
+          console.warn('Supabase Auth failed, using Dev Bypass');
+          localStorage.setItem('role', role);
+          localStorage.setItem('loggedUser', email + ' (Guest)');
+          if (role === 'Doctor') {
+            navigate('/dashboard');
+          } else {
+            navigate('/patient');
+          }
         } else {
-          localStorage.setItem('loggedDoctor', email);
-          navigate('/dashboard');
+          localStorage.setItem('role', role);
+          localStorage.setItem('loggedUser', email);
+          if (role === 'Doctor') {
+            navigate('/dashboard');
+          } else {
+            navigate('/patient');
+          }
         }
       } catch (err) {
         alert(err.message);

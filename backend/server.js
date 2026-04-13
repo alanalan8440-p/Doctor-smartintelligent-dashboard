@@ -3,6 +3,7 @@ import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import axios from 'axios';
+import { supabase } from './supabase.js';
 
 const app = express();
 app.use(cors());
@@ -71,6 +72,24 @@ io.on('connection', (socket) => {
 
     patientVitals.updatedAt = new Date().toISOString();
     socket.emit('vitals', patientVitals);
+
+    // Persist to Supabase
+    try {
+      const { error } = await supabase
+        .from('patient_vitals')
+        .insert([{
+          bp_systolic: patientVitals.bpSystolic,
+          bp_diastolic: patientVitals.bpDiastolic,
+          sugar: patientVitals.sugar,
+          heart_rate: patientVitals.heartRate,
+          oxygen: patientVitals.oxygen,
+          risk_level: patientVitals.riskLevel
+        }]);
+      
+      if (error) console.error('Supabase Save Error:', error.message);
+    } catch (dbErr) {
+      console.error('Database connection error:', dbErr);
+    }
 
     // Alert thresholds
     if (patientVitals.bpSystolic > 160) io.emit('alert', { type: '🔴 Critical', msg: 'BP Critical!' });
