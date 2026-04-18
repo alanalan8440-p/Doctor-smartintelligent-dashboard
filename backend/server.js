@@ -113,6 +113,15 @@ app.post('/api/surgery-analyzer', async (req, res) => {
   }
 });
 
+app.post('/api/chat', async (req, res) => {
+  try {
+    const aiRes = await axios.post(`${AI_API_URL}/api/chat`, req.body);
+    res.json(aiRes.data);
+  } catch(err) {
+    res.status(500).json({ error: 'AI Chat service unavailable' });
+  }
+});
+
 const PORT = 3000;
 server.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);

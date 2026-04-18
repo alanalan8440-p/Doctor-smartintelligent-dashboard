@@ -15,6 +15,15 @@
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
+[data-theme='dark'] {
+  --bg-color: #0f172a;
+  --panel-bg: #1e293b;
+  --panel-border: #334155;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -401,4 +410,70 @@ h3 {
   .dashboard-container { box-shadow: none; padding: 0; }
   .action-buttons, .quick-actions, .surgery-panel { display: none !important; }
   .glass-panel { border: 1px solid #000; box-shadow: none; break-inside: avoid; }
+}
+
+/* Score Breakdown */
+.score-row { margin-bottom: 12px; }
+.score-bar { background: #e2e8f0; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 6px; }
+.score-fill { height: 100%; transition: width 0.5s ease-in-out; }
+
+/* AI Chatbot */
+.chat-toggle {
+  position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+  background: #3b82f6; color: white; border-radius: 50%; border: none;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+  transition: transform 0.2s;
+}
+.chat-toggle:hover { transform: scale(1.1); }
+
+.chat-window {
+  position: fixed; bottom: 100px; right: 30px; width: 350px; height: 450px;
+  background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  display: flex; flex-direction: column; overflow: hidden; z-index: 1000;
+}
+.chat-header { background: #3b82f6; color: white; padding: 15px 20px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+.chat-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f8fafc; }
+.chat-footer { padding: 15px; border-top: 1px solid #e2e8f0; display: flex; gap: 8px; }
+.chat-footer input { flex: 1; border: 1px solid #e2e8f0; border-radius: 20px; padding: 10px 15px; outline: none; font-size: 14px; }
+.chat-footer button { background: #3b82f6; color: white; border: none; border-radius: 20px; padding: 0 15px; cursor: pointer; font-weight: 600; font-size: 13px; }
+
+.chat-bubble { padding: 10px 15px; border-radius: 18px; max-width: 80%; font-size: 13px; line-height: 1.4; }
+.chat-bubble.assistant { background: white; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.chat-bubble.user { background: #3b82f6; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+.chat-bubble.typing { color: #94a3b8; font-style: italic; }
+
+/* Pulse Animation */
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.emergency-actions { display: flex; gap: 20px; align-items: center; }
+.btn.solid-red { background: #ef4444; color: white; border-radius: 12px; }
+
+/* Prescription & Document Styles */
+.prescription-overlay {
+  position: fixed; inset: 0; background: white; z-index: 2000; overflow-y: auto; padding: 40px; color: black; display: none;
+}
+.prescription-overlay.active { display: block; }
+.presc-header { display: flex; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 20px; }
+.presc-body { margin-bottom: 30px; }
+.doc-upload-box {
+  border: 2px dashed var(--panel-border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; color: var(--text-muted);
+}
+.doc-upload-box:hover { border-color: var(--color-blue); background: rgba(59, 130, 246, 0.05); }
+
+/* Theme Toggle */
+.theme-toggle-btn {
+  background: var(--panel-bg); color: var(--text-main); border: 1px solid var(--panel-border); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
+}
+.theme-toggle-btn:hover { transform: rotate(15deg); }
+
+@media print {
+  body { background: white; color: black; }
+  .dashboard-container { display: none !important; }
+  .prescription-overlay { display: block; position: static; padding: 0; }
+  .presc-actions { display: none !important; }
 }

@@ -17,6 +17,10 @@ class SurgeryInput(BaseModel):
     disease: str
     history: List[str]
 
+class ChatInput(BaseModel):
+    message: str
+    context: dict
+
 @app.get("/")
 def read_root():
     return {"status": "AI Service Running"}
@@ -74,3 +78,36 @@ def surgery_analyzer(data: SurgeryInput):
         "riskLevel": level,
         "keyRiskFactors": risk_factors or ["No significant risks identified"]
     }
+@app.post("/api/chat")
+def chat_assistant(data: ChatInput):
+    msg = data.message.lower()
+    ctx = data.context
+    vitals = ctx.get('vitals', {})
+    score = ctx.get('healthScore', 0)
+    
+    response = "I'm not sure about that. Please consult your doctor for medical advice."
+    
+    if "bp" in msg or "blood pressure" in msg:
+        val = vitals.get('bpSystolic', 120)
+        if val > 140:
+            response = f"Your BP is currently {val}mmHg, which is high. You should rest, avoid salt, and monitor it closely. If it stays above 160, contact us immediately."
+        else:
+            response = f"Your current BP is {val}mmHg, which is within a relatively safe range."
+            
+    elif "sugar" in msg or "diabetes" in msg:
+        val = vitals.get('sugar', 100)
+        if val > 150:
+            response = f"Your blood sugar is {val}mg/dL. This is elevated. Have you taken your medication? Avoid sugary foods and drink water."
+        else:
+            response = f"Your sugar is {val}mg/dL, which is normal. Keep up the good diet!"
+            
+    elif "metformin" in msg:
+        response = "Metformin is typically taken with meals to reduce stomach side effects. Do not skip doses."
+        
+    elif "health score" in msg:
+        response = f"Your current Health Score is {score}/100. { 'You are doing great!' if score > 80 else 'We should work on improving some vitals.' }"
+
+    elif "hello" in msg or "hi" in msg:
+        response = "Hello! I am your clinical assistant. You can ask me about your vitals, medications, or health score."
+
+    return {"response": response}

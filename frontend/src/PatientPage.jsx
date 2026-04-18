@@ -12,7 +12,9 @@ import {
   Phone, 
   User,
   MessageSquare,
-  ShieldCheck
+  ShieldCheck,
+  FileUp,
+  File
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
@@ -31,6 +33,16 @@ export default function PatientPage() {
     { id: 2, name: 'Metformin', dosage: '500mg', time: '01:00 PM', taken: false },
     { id: 3, name: 'Aspirin', dosage: '81mg', time: '08:00 PM', taken: false },
   ]);
+  const [documents, setDocuments] = useState([
+    { id: 1, name: 'Blood_Test_Results.pdf', date: 'Oct 15, 2023' }
+  ]);
+
+  const handleFileUpload = (e) => {
+    if (e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setDocuments(prev => [...prev, { id: Date.now(), name: file.name, date: new Date().toLocaleDateString() }]);
+    }
+  };
 
   useEffect(() => {
     const socket = io(SOCKET_URL);
@@ -52,8 +64,11 @@ export default function PatientPage() {
           <ShieldCheck size={28} color="#3b82f6" />
           <span>PatientCare AI</span>
         </div>
-        <div className="nav-actions">
-          <button className="icon-btn" onClick={() => navigate('/login')}><LogOut size={20} /></button>
+        <div className="nav-actions" style={{display: 'flex', gap: '10px', alignItems: 'center'}}>
+          <button className="btn outline" onClick={() => navigate('/dashboard')} style={{padding: '8px 15px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '5px', background: 'white', color: '#3b82f6', border: '1px solid #e2e8f0', borderRadius: '10px', cursor: 'pointer', fontWeight: 600}}>
+            Go to Dashboard
+          </button>
+          <button className="icon-btn" onClick={() => navigate('/login')} title="Logout"><LogOut size={20} /></button>
         </div>
       </nav>
 
@@ -157,6 +172,26 @@ export default function PatientPage() {
                 <input type="text" placeholder="Ask me about your symptoms..." />
                 <button><MessageSquare size={18} /></button>
               </div>
+            </div>
+
+            <div className="p-card documents-card">
+              <h3>Lab Reports & Documents</h3>
+              <div className="docs-list" style={{margin: '15px 0'}}>
+                {documents.map(doc => (
+                  <div key={doc.id} style={{display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', background: '#f8fafc', borderRadius: '8px', marginBottom: '8px', border: '1px solid #e2e8f0'}}>
+                    <File size={18} color="#3b82f6" />
+                    <div style={{flex: 1}}>
+                      <div style={{fontSize: '13px', fontWeight: 600}}>{doc.name}</div>
+                      <div style={{fontSize: '11px', color: '#64748b'}}>{doc.date}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <label className="doc-upload-box" style={{display: 'block'}}>
+                <input type="file" style={{display:'none'}} onChange={handleFileUpload} />
+                <FileUp size={24} style={{marginBottom: '10px', display: 'block', margin: '0 auto'}} />
+                <span style={{fontSize: '13px', fontWeight: 500}}>Click to Upload Result</span>
+              </label>
             </div>
 
             <div className="emergency-card">
