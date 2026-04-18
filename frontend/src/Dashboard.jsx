@@ -4,7 +4,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Phone, AlertTriangle, Syringe, Clock, Activity, Heart, Droplet, CheckCircle, XCircle, LogOut, User, Printer, BrainCircuit, Users, PieChart as PieIcon, Moon, Sun, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const SOCKET_URL = 'http://localhost:3000';
+const SOCKET_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 export default function Dashboard() {
   const navigate = useNavigate();

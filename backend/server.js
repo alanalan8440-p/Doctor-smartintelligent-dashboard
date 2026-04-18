@@ -14,7 +14,7 @@ const io = new Server(server, {
   cors: { origin: '*' }
 });
 
-const AI_API_URL = 'http://localhost:8000';
+const AI_API_URL = process.env.AI_API_URL || 'http://localhost:8000';
 
 // Real-time generator variables
 let patientVitals = {
